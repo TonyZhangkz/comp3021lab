@@ -1,11 +1,21 @@
 package base;
 import java.util.ArrayList;
+
 import java.util.List;
 import java.util.Collections;
 import java.lang.String;
-public class NoteBook {
+
+//serialization
+import java.io.Serializable;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+
+public class NoteBook implements Serializable{
 
 	private ArrayList<Folder> folders;
+	private static final long serialVersionUID = 1L;
 	public NoteBook() {
 		this.folders = new ArrayList<Folder>();
 	}
@@ -58,6 +68,55 @@ public class NoteBook {
 		for (Folder f:this.folders) {
 			search_results.addAll(f.searchNotes(keywords));
 		}
-		return search_results;
-	}
+		return search_results;}
+	//serialization
+	/**
+	 * method to save the NoteBook instance to file
+	 * 
+	 * @param file, the path of the file where to save the object serialization
+	 * @return true if save on file is successful, false otherwise
+	 */
+
+	public boolean save(String file) {
+		FileOutputStream fos = null;
+		ObjectOutputStream oos = null;
+		try {
+			fos = new FileOutputStream(file);
+			oos = new ObjectOutputStream(fos);
+			oos.writeObject(this);
+			oos.close();
+			return true;
+			
+		}catch(Exception e) {
+			 e.printStackTrace();
+			 return false;
+		}}
+	//initialize loader
+	/**
+	 * 
+	 * Constructor of an object NoteBook from an object serialization on disk
+	 * 
+	 * @param file, the path of the file for loading the object serialization
+	 */
+
+	public NoteBook(String file) {
+		FileInputStream fis = null;
+		ObjectInputStream ois = null;
+		try {
+			fis = new FileInputStream(file);
+			ois = new ObjectInputStream(fis);
+			NoteBook nb_copy =  (NoteBook)ois.readObject();
+			//deep copy
+			this.folders = nb_copy.getFolders();
+			
+			//close stream
+			ois.close();
+			}
+		catch(Exception e) {
+			e.printStackTrace();
+			this.folders=null;
+		}}
+	
+	
+	
 }

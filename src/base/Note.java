@@ -3,8 +3,8 @@ package base;
 import java.lang.String;
 import java.util.Date;
 
-
-public class Note implements Comparable<Note>{
+import java.io.Serializable;
+public class Note implements Comparable<Note>,Serializable{
 	private Date date;
 	private String title;
 	public Note(String title) {
